@@ -9,6 +9,7 @@ add_executable(bons_str "")
 target_sources(bons_str
 	PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bstring.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bstring_utils.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
 

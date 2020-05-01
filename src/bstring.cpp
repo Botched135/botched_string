@@ -34,7 +34,6 @@ namespace botched_utils
 
     void BString::reset()
     {
-        _reset_split_array();
         if(_str)
         {
             delete [] _str;
@@ -68,42 +67,41 @@ namespace botched_utils
 
     BString & BString::operator += (const char * rhs)
     {
-    if(rhs)
-    {
-        size_t newlen = _str_len+ strnlen(rhs, _bons_str_max_len);
-        if (newlen > _bons_str_max_len) newlen = _bons_str_max_len;
+        if(rhs)
+        {
+            size_t newlen = _str_len+ strnlen(rhs, _bons_str_max_len);
+            if (newlen > _bons_str_max_len) newlen = _bons_str_max_len;
 
-        size_t rhs_len = newlen - _str_len;
-        if(rhs_len < 1) return *this;
+            size_t rhs_len = newlen - _str_len;
+            if(rhs_len < 1) return *this;
 
-        char * buffer = new char[newlen+1]();
-        if(_str && _str_len) memcpy(buffer, _str, _str_len);
-        memcpy(buffer+_str_len, rhs, rhs_len);
-        copy_str(buffer);
-        delete [] buffer;
-    }
-    return *this;
+            char * buffer = new char[newlen+1]();
+            if(_str && _str_len) memcpy(buffer, _str, _str_len);
+            memcpy(buffer+_str_len, rhs, rhs_len);
+            copy_str(buffer);
+            delete [] buffer;
+        }
+        return *this;
     }
 
     BString & BString::operator += (const BString & rhs)
     {
-    
-    const char * rhs_str = rhs._str;
-    if(rhs_str)
-    {
-        size_t newlen = _str_len+ rhs._str_len;
-        if (newlen > _bons_str_max_len) newlen = _bons_str_max_len;
+        const char * rhs_str = rhs._str;
+        if(rhs_str)
+        {
+            size_t newlen = _str_len+ rhs._str_len;
+            if (newlen > _bons_str_max_len) newlen = _bons_str_max_len;
 
-        size_t rhs_len = newlen - _str_len;
-        if(rhs_len < 1) return *this;
+            size_t rhs_len = newlen - _str_len;
+            if(rhs_len < 1) return *this;
 
-        char * buffer = new char[newlen+1]();
-        if(_str && _str_len) memcpy(buffer, _str, _str_len);
-        memcpy(buffer+_str_len, rhs_str, rhs_len);
-        copy_str(buffer);
-        delete [] buffer;
-    }
-    return *this;
+            char * buffer = new char[newlen+1]();
+            if(_str && _str_len) memcpy(buffer, _str, _str_len);
+            memcpy(buffer+_str_len, rhs_str, rhs_len);
+            copy_str(buffer);
+            delete [] buffer;
+        }
+        return *this;
     }
 
     const char BString::operator[] (const int index) const
@@ -180,32 +178,6 @@ namespace botched_utils
         _str_len = (size > _bons_str_max_len) ? _bons_str_max_len : size;
         _str = new char[_str_len+1](); // fills new char with 0;
         return _str;
-    }
-
-
-
-    void BString::_reset_split_array() const 
-    {
-        if(_split_count)
-        {
-            //dtor the lemenets in the array
-            while(_split_count)
-            {
-                _split_array[--_split_count].reset();
-            }
-            _split_array.reset();
-            _split_count = 0;
-        }
-    }
-
-    void BString::_append_split_array(const BString & str) const
-    {
-        if(_split_count >= _bons_str_max_split) return;
-        if(!_split_count)
-            _split_array.reset(new _bsp[_bons_str_max_split+1]);
-        
-        _split_array[_split_count] = std::make_shared<BString>(str);
-        ++_split_count;
     }
 
     // UTILITY METHODS
@@ -388,58 +360,7 @@ namespace botched_utils
             rs = lh_string + replace + rh_string;
         } 
         return rs;
-    }
-
-    const BString::split_ptr & BString::split(const char * match) const
-    {
-        return split(match, -1);
-
-    }
-    const BString::split_ptr & BString::split(const char match) const
-    {
-        const char match_s[2] = {match,0};
-        return split(match_s, -1);
-
-    }
-    const BString::split_ptr & BString::split(const char * match, int max_split) const
-    {
-        _reset_split_array();
-        if(_str_len < 1 ) return _split_array;
-        if(max_split < 0) max_split = _bons_str_max_split;
-
-        size_t match_len = strnlen(match, _bons_str_max_len);
-        if( match_len >= _bons_str_max_len) return _split_array;
-
-
-        char * match_index;
-        char * str_ptr = _str;
-        while((match_index = strstr(str_ptr, match)) && --max_split)
-        {
-            if(match_index != str_ptr)
-            {
-                size_t lhsz = match_index - str_ptr;
-                char* cslhs = new char[lhsz+1](); // temporary buffer
-                memcpy(cslhs, str_ptr, lhsz);
-                _append_split_array(cslhs);
-                delete [] cslhs;
-                str_ptr += lhsz;
-            }
-            str_ptr += match_len;
-        }
-
-        if(*str_ptr != '\0')
-            _append_split_array(str_ptr);
-
-        return _split_array;
-
-    }
-
-    const BString & BString::split_item(size_t index) const
-    {
-        if (_split_count > index) return *_split_array[index];
-        return *this; //I dont think I like this...
-    }
-       
+    }       
 }
 #ifdef _MSC_VER
 

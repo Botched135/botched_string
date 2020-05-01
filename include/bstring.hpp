@@ -22,10 +22,9 @@ int vasprintf(char** ret, const char * format, va_list ap);
 
 namespace botched_utils 
 {
-    constexpr const char * _bons_str_version = "0.0.1";
+    constexpr const char * _bons_str_version = "0.1.1";
     constexpr size_t _bons_str_max_len = 65535;
-    constexpr size_t _bons_str_max_split = 1023;
-    
+    class BStringSplit;
     class BString
     {
         char * _str = nullptr;
@@ -35,21 +34,17 @@ namespace botched_utils
         // lets make it with raw pointers.
         // maybe consider whether or not we should store the split in the BonsString or whether
         // they simply should be move the receiver 
-        typedef std::shared_ptr<BString> _bsp;
+        //typedef std::shared_ptr<BString> _bsp;
         // unique ptr is the only one that allows for storing arrays
-        typedef std::unique_ptr<_bsp[]> _split_ptr;
+        //typedef std::unique_ptr<_bsp[]> _split_ptr;
         // these are mutable to make sure string split methods can operator on const level
-        mutable _split_ptr _split_array;
-        mutable size_t _split_count = 0;
-
-        void _reset_split_array() const;
-        void _append_split_array(const BString & str) const;
+       // mutable _split_ptr _split_array;
+        //mutable size_t _split_count = 0;
         void swap(BString & other);
         const char *  copy_str(const char * str);
         const char * alloc_str(size_t size);
+        friend BStringSplit* split(const BString& src, const char * match, int max_split);
     public: 
-        typedef _split_ptr split_ptr;
-
         BString();
         BString(const char * str);
         BString(const BString & other); //copy constructor
@@ -91,16 +86,10 @@ namespace botched_utils
         const BString & char_replace(const char & match, const char & replace);
         BString sub_string(size_t start, size_t length);
         long find (const BString & match) const;
+
         const BString replace_first(const BString & match, const BString & replace);
         const BString replace_count(const BString & match, const BString & replace, size_t count);
         const BString replace_all(const BString & match, const BString & replace);
-
-        // split methods 
-        const split_ptr & split(const char * match) const;
-        const split_ptr & split(const char match) const;
-        const split_ptr & split(const char * match, int max_split) const;
-        const BString & split_item(size_t index) const;
-        size_t split_count() const { return _split_count;}
     };
     // non-memember operator overload for appending
     BString operator+ (const BString & lhs, const BString & rhs);
