@@ -22,7 +22,7 @@ int vasprintf(char** ret, const char * format, va_list ap);
 
 namespace botched_utils 
 {
-    constexpr const char * _bons_str_version = "0.1.1";
+    constexpr const char * _bons_str_version = "0.1.2";
     constexpr size_t _bons_str_max_len = 65535;
     class BStringSplit;
     class BString
