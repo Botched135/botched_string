@@ -315,7 +315,6 @@ namespace botched_utils
 
     const BString BString::replace_first(const BString & match, const BString & replace)
     {
-        // this ONLY takes the first match. This should loop, if we want to replace all
         BString rs;
         long found_match = find(match);
         if(found_match >= 0)
@@ -329,36 +328,42 @@ namespace botched_utils
         return rs;
     }
 
-    const BString BString::replace_count(const BString & match, const BString & replace, size_t)
+    const BString BString::replace_count(const BString & match, const BString & replace, size_t count)
     {
-        // TODO: Implement
-        // this ONLY takes the first match. This should loop, if we want to replace all
-        BString rs;
+        BString rs = *this;
         long found_match = find(match);
-        if(found_match >= 0)
+        while(found_match >= 0 && count--)
         {
             size_t pos_start = (size_t) found_match;
             size_t pos_end = pos_start + match._str_len;
-            BString lh_string = pos_start > 0 ? sub_string(0, pos_start) : "";
-            BString rh_string= sub_string(pos_end, this->_str_len - pos_end);
+            BString lh_string = pos_start > 0 ? rs.sub_string(0, pos_start) : "";
+            BString rh_string= rs.sub_string(pos_end, rs._str_len - pos_end);
             rs = lh_string + replace + rh_string;
-        } 
+            found_match = rs.find(match);
+        }
         return rs;
     }
 
     const BString BString::replace_all(const BString & match, const BString & replace)
     {
-        // TODO: Implement
         BString rs;
+        if(match == replace)
+        {
+            puts("Match and replace are equal. Returning empty string");
+            return rs;
+        }
+
         long found_match = find(match);
-        if(found_match >= 0)
+        rs = *this;
+        while(found_match >= 0)
         {
             size_t pos_start = (size_t) found_match;
             size_t pos_end = pos_start + match._str_len;
-            BString lh_string = pos_start > 0 ? sub_string(0, pos_start) : "";
-            BString rh_string= sub_string(pos_end, this->_str_len - pos_end);
+            BString lh_string = pos_start > 0 ? rs.sub_string(0, pos_start) : "";
+            BString rh_string= rs.sub_string(pos_end, rs._str_len - pos_end);
             rs = lh_string + replace + rh_string;
-        } 
+            found_match = rs.find(match);
+        }
         return rs;
     }       
 }

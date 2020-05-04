@@ -17,7 +17,7 @@ namespace botched_utils
 
         BStringSplit(){} // private constructor, so they cannot be created empty
 
-        friend BStringSplit* split(const BString& src, const char * match, int max_split);
+        friend BStringSplit split(const BString& src, const char * match, int max_split);
     public:
         BStringSplit(const BStringSplit &other); // COPY CTOR
         BStringSplit(BStringSplit && other) noexcept; // MOVE CTOR 
@@ -30,8 +30,8 @@ namespace botched_utils
     };
 
     // split methods 
-    BStringSplit* split(const BString& src, const char * match);
-    BStringSplit* split(const BString& src, const char match);
-    BStringSplit* split(const BString& src, const char * match, int max_split);
+    BStringSplit split(const BString& src, const char * match);
+    BStringSplit split(const BString& src, const char match);
+    BStringSplit split(const BString& src, const char * match, int max_split);
 }
 #endif // __BSTRING_UTILS_HPP

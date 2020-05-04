@@ -52,32 +52,32 @@ namespace botched_utils
     {
         if(index >= _split_count || index < 0)
         {
-            puts("Index out of bounds for split string. Returning first index \n");
+            puts("Index out of bounds for split string. Returning first split entry\n");
             return (*_split_array[0]);
         }
         return (*_split_array[index]);
     }
 
-    BStringSplit* split(const BString& src, const char * match)
+    BStringSplit split(const BString& src, const char * match)
     {
        return split(src, match, -1);
 
     }
 
-    BStringSplit* split(const BString& src, const char match)
+    BStringSplit split(const BString& src, const char match)
     {
         const char match_s[2] = {match,0};
         return split(src, match_s, -1);
 
     }
-    BStringSplit* split(const BString& src, const char * match, int max_split)
+    BStringSplit split(const BString& src, const char * match, int max_split)
     {
         size_t src_str_len = src._str_len;
-        if(src_str_len < 1 ) return nullptr;
+        if(src_str_len < 1 ) return BStringSplit();
         if(max_split < 0) max_split = _bons_str_max_split;
 
         size_t match_len = strnlen(match, _bons_str_max_len);
-        if( match_len >= _bons_str_max_len || match_len > src_str_len) return nullptr;
+        if( match_len >= _bons_str_max_len || match_len > src_str_len) return BStringSplit();
 
 
         char * match_index;
@@ -91,7 +91,7 @@ namespace botched_utils
             {
                 size_t lhs_size = match_index - str_ptr;
                 char* cstr_lhs = new char[lhs_size+1](); // temporary buffer
-                memcpy(cstr_lhs, str_ptr, lhs_size);
+                memcpy(cstr_lhs, str_ptr, lhs_size);             
                 temp_split_array[split_count] = new BString(cstr_lhs);
                 ++split_count;
                 delete [] cstr_lhs;
@@ -99,7 +99,7 @@ namespace botched_utils
             }
             str_ptr += match_len;
         }
-
+      
         if(*str_ptr != '\0')
         {
             temp_split_array[split_count] = new BString(str_ptr);
@@ -107,14 +107,12 @@ namespace botched_utils
         }
         
         
-        BStringSplit* split = new BStringSplit();
-        split->_split_array = new BString*[split_count]();
-        split->_split_count = split_count;
+        BStringSplit split;
+        split._split_array = new BString*[split_count]();
+        split._split_count = split_count;
         
-        memcpy(split->_split_array, temp_split_array, sizeof(BString*)*split_count);
-        delete[] temp_split_array;
-        
-        printf("%ld\n", split->_split_count);
+        memcpy(split._split_array, temp_split_array, sizeof(BString*)*split_count);
+
         return split;
     }
     

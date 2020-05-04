@@ -43,7 +43,7 @@ namespace botched_utils
         void swap(BString & other);
         const char *  copy_str(const char * str);
         const char * alloc_str(size_t size);
-        friend BStringSplit* split(const BString& src, const char * match, int max_split);
+        friend BStringSplit split(const BString& src, const char * match, int max_split);
     public: 
         BString();
         BString(const char * str);
