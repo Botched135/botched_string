@@ -1,13 +1,16 @@
 #include "../include/bstring_utils.hpp"
 
-namespace botched_utils 
+namespace botched
 {
+    BStringSplit::BStringSplit(const BString& src)
+    {
+        _split_array = new BString*[1]();
+        _split_array[0] = new BString(src);
+        _split_count = 1;
+    }
 
     BStringSplit::BStringSplit(const BStringSplit &other)
     {
-        #ifdef DEBUG
-        puts("Calling copy ctor");
-        #endif 
         size_t split_count = other._split_count;
         if(split_count > 0)
         {
@@ -20,9 +23,6 @@ namespace botched_utils
 
     BStringSplit::BStringSplit(BStringSplit && other) noexcept
     {
-        #ifdef DEBUG
-        puts("Calling move ctor");
-        #endif 
         _reset_split_array();
         _split_array = other._split_array;
         _split_count = other._split_count;
@@ -33,17 +33,11 @@ namespace botched_utils
 
     BStringSplit::~BStringSplit()
     {
-        #ifdef DEBUG
-        puts("Calling dtor");
-        #endif 
         _reset_split_array();
     }
 
     BStringSplit& BStringSplit::operator = (BStringSplit other)
     {
-        #ifdef DEBUG
-        puts("Calling assignment operator");
-        #endif 
         swap(other);
         return *this;   
     }
@@ -52,7 +46,6 @@ namespace botched_utils
     {
         if(index >= _split_count || index < 0)
         {
-            puts("Index out of bounds for split string. Returning first split entry\n");
             return (*_split_array[0]);
         }
         return (*_split_array[index]);
@@ -73,11 +66,11 @@ namespace botched_utils
     BStringSplit split(const BString& src, const char * match, int max_split)
     {
         size_t src_str_len = src._str_len;
-        if(src_str_len < 1 ) return BStringSplit();
+        if(src_str_len < 1 ) return BStringSplit(src); 
         if(max_split < 0) max_split = _bons_str_max_split;
 
         size_t match_len = strnlen(match, _bons_str_max_len);
-        if( match_len >= _bons_str_max_len || match_len > src_str_len) return BStringSplit();
+        if( match_len >= _bons_str_max_len || match_len > src_str_len) return BStringSplit(src);
 
 
         char * match_index;

@@ -3,7 +3,7 @@
 #include "bstring.hpp"
 
 #define DEBUG
-namespace botched_utils 
+namespace botched 
 {
 
     constexpr size_t _bons_str_max_split = 1023;
@@ -16,7 +16,7 @@ namespace botched_utils
         void swap(BStringSplit& other);
 
         BStringSplit(){} // private constructor, so they cannot be created empty
-
+        BStringSplit(const BString& src); // only used if split cannot be found
         friend BStringSplit split(const BString& src, const char * match, int max_split);
     public:
         BStringSplit(const BStringSplit &other); // COPY CTOR

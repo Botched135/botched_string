@@ -1,6 +1,6 @@
 #include "../include/bstring.hpp"
 
-namespace botched_utils
+namespace botched
 {
     BString::BString()
     {
