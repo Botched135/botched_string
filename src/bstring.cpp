@@ -262,6 +262,15 @@ namespace botched
         
     }
 
+    BString BString::reverse() const
+    {
+        BString rs = *this;
+        for (size_t i = 0; i < rs.length()/2; i++)
+            std::swap(rs._str[i], rs._str[rs.length()-i-1]);
+        
+        return rs;
+    }
+
     const char & BString::back() const
     {
         return _str[_str_len-1];
@@ -306,17 +315,46 @@ namespace botched
         return rs;
     }
 
-    long BString::find(const BString & match) const
+    long BString::find_first(const BString & match) const
     {
         char * pos = strstr(_str, match);
         if(pos) return (long) (pos - _str);
         return -1;
     }
 
+    long BString::find_last(const BString & match) const
+    {
+        BString src_reversed = reverse();
+        BString match_reversed = match.reverse();
+
+        char * pos = strstr(src_reversed._str, match_reversed);
+        if(pos)
+        {
+            long _pos = (long) (pos - src_reversed._str);
+            return (length()-1) - (match.length()-1) -_pos;
+        } 
+        return -1;
+    }
+
     const BString BString::replace_first(const BString & match, const BString & replace)
     {
         BString rs;
-        long found_match = find(match);
+        long found_match = find_first(match);
+        if(found_match >= 0)
+        {
+            size_t pos_start = (size_t) found_match;
+            size_t pos_end = pos_start + match._str_len;
+            BString lh_string = pos_start > 0 ? sub_string(0, pos_start) : "";
+            BString rh_string= sub_string(pos_end, this->_str_len - pos_end);
+            rs = lh_string + replace + rh_string;
+        } 
+        return rs;
+    }
+
+    const BString BString::replace_last(const BString & match, const BString & replace)
+    {
+        BString rs;
+        long found_match = find_last(match);
         if(found_match >= 0)
         {
             size_t pos_start = (size_t) found_match;
@@ -331,7 +369,7 @@ namespace botched
     const BString BString::replace_count(const BString & match, const BString & replace, size_t count)
     {
         BString rs = *this;
-        long found_match = find(match);
+        long found_match = find_first(match);
         while(found_match >= 0 && count--)
         {
             size_t pos_start = (size_t) found_match;
@@ -339,9 +377,27 @@ namespace botched
             BString lh_string = pos_start > 0 ? rs.sub_string(0, pos_start) : "";
             BString rh_string= rs.sub_string(pos_end, rs._str_len - pos_end);
             rs = lh_string + replace + rh_string;
-            found_match = rs.find(match);
+            found_match = rs.find_first(match);
         }
         return rs;
+    }
+
+    const BString BString::replace_last_count(const BString & match, const BString & replace, size_t count)
+    {
+        BString rs = reverse();
+        BString reverse_match = match.reverse();
+        BString reverse_replace = replace.reverse();
+        long found_match = rs.find_first(reverse_match);
+        while(found_match >= 0 && count--)
+        {
+            size_t pos_start = (size_t) found_match;
+            size_t pos_end = pos_start + match._str_len;
+            BString lh_string = pos_start > 0 ? rs.sub_string(0, pos_start) : "";
+            BString rh_string= rs.sub_string(pos_end, rs._str_len - pos_end);
+            rs = lh_string + reverse_replace + rh_string;
+            found_match = rs.find_first(reverse_match);
+        }
+        return rs.reverse();
     }
 
     const BString BString::replace_all(const BString & match, const BString & replace)
@@ -353,7 +409,7 @@ namespace botched
             return rs;
         }
 
-        long found_match = find(match);
+        long found_match = find_first(match);
         rs = *this;
         while(found_match >= 0)
         {
@@ -362,7 +418,7 @@ namespace botched
             BString lh_string = pos_start > 0 ? rs.sub_string(0, pos_start) : "";
             BString rh_string= rs.sub_string(pos_end, rs._str_len - pos_end);
             rs = lh_string + replace + rh_string;
-            found_match = rs.find(match);
+            found_match = rs.find_first(match);
         }
         return rs;
     }       

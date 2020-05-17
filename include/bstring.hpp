@@ -42,7 +42,7 @@ namespace botched
        // mutable _split_ptr _split_array;
         //mutable size_t _split_count = 0;
         void swap(BString & other);
-        const char *  copy_str(const char * str);
+        const char * copy_str(const char * str);
         const char * alloc_str(size_t size);
         friend BStringSplit split(const BString& src, const char * match, int max_split);
     public: 
@@ -65,10 +65,10 @@ namespace botched
         //comparison operators
 
         bool operator == (const BString & rhs) const;
-        bool operator!= (const BString & rhs) const;
-        bool operator > (const BString & rhs) const;
+        bool operator != (const BString & rhs) const;
+        bool operator >  (const BString & rhs) const;
         bool operator >= (const BString & rhs) const;
-        bool operator < (const BString & rhs) const;
+        bool operator <  (const BString & rhs) const;
         bool operator <= (const BString & rhs) const;
 
         // utility methods
@@ -80,6 +80,7 @@ namespace botched
         BString & trim();
         BString lower() const;
         BString upper() const;
+        BString reverse() const;
         const char & back() const;
         const char & front() const;
 
@@ -87,10 +88,13 @@ namespace botched
         long int char_find(const char & match) const;
         const BString & char_replace(const char & match, const char & replace);
         BString sub_string(size_t start, size_t length);
-        long find (const BString & match) const;
+        long find_first (const BString & match) const;
+        long find_last (const BString & match) const;
 
         const BString replace_first(const BString & match, const BString & replace);
+        const BString replace_last(const BString & match, const BString & replace);
         const BString replace_count(const BString & match, const BString & replace, size_t count);
+        const BString replace_last_count(const BString & match, const BString & replace, size_t count);
         const BString replace_all(const BString & match, const BString & replace);
     };
     // non-memember operator overload for appending

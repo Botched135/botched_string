@@ -5,8 +5,10 @@ int main(int argc, const char** argv)
 {
     botched::BString test = "Country_roads_take__me_home_to_a_place___I__be_lo_";
     botched::BString test2 = "a_a_a_a__c__s__a";
-    botched::BString test3 = "ab";
-
+    botched::BString test3 = "abcabcabc";
+    
+    auto sd = test3.replace_last_count("abc", "SKIBI",2);
+    printf("%s \n", sd.c_str());
     auto stuff = botched::split(test,'_');
     auto stuff2 = botched::split(test, "Contry");
     auto stuff3 = botched::split(test3,"bbb");
